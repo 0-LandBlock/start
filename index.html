@@ -1,1 +1,379 @@
-test 123 321
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LandBlok - Serwer Minecraft</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Minecraft&family=Montserrat:wght@400;600;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('https://cdnjs.cloudflare.com/ajax/libs/placeholder-images/0.2.0/background.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        header {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 10px 0;
+            color: #4caf50;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            font-family: 'Minecraft', sans-serif;
+            letter-spacing: 2px;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #bdbdbd;
+        }
+        
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            animation: slideUp 1s ease-in-out;
+        }
+        
+        .content-container {
+            text-align: center;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .description {
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #e0e0e0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 220px;
+            height: 220px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 3px solid transparent;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+            z-index: 1;
+        }
+        
+        .btn:hover:before {
+            left: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
+        }
+        
+        .discord {
+            border-color: #7289DA;
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.7), rgba(114, 137, 218, 0.2));
+        }
+        
+        .discord:hover {
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.7), rgba(114, 137, 218, 0.4));
+        }
+        
+        .shop {
+            border-color: #4CAF50;
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.7), rgba(76, 175, 80, 0.2));
+        }
+        
+        .shop:hover {
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.7), rgba(76, 175, 80, 0.4));
+        }
+        
+        .docs {
+            border-color: #FFC107;
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.7), rgba(255, 193, 7, 0.2));
+        }
+        
+        .docs:hover {
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.7), rgba(255, 193, 7, 0.4));
+        }
+        
+        .btn-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            font-size: 0.9rem;
+            color: #bdbdbd;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .minecraft-block {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' fill='%234caf50' opacity='0.7'/%3E%3Cpath d='M0,0 L30,0 L30,30 L0,30 Z' fill='none' stroke='%23000' stroke-width='2' opacity='0.5'/%3E%3C/svg%3E");
+            animation: float 20s infinite linear;
+            opacity: 0.4;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .server-status {
+            margin-top: 40px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.2rem;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                height: 180px;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+            
+            .btn {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <header>
+        <h1 class="logo">LandBlok</h1>
+        <p class="tagline">Twój ulubiony serwer Minecraft</p>
+    </header>
+    
+    <main>
+        <div class="content-container">
+            <div class="description">
+                <p>Witaj w świecie LandBlok, miejscu gdzie Twoja kreatywność nie zna granic! Dołącz do naszej społeczności graczy, buduj niesamowite konstrukcje i przeżywaj przygody w unikalnym środowisku.</p>
+            </div>
+            
+            <div class="buttons-container">
+                <a href="https://dc.landblock.pl" class="btn discord">
+                    <div class="btn-icon">💬</div>
+                    Discord
+                </a>
+                <a href="https://sklep.landblock.pl" class="btn shop">
+                    <div class="btn-icon">🛒</div>
+                    Sklep
+                </a>
+                <a href="https://docs.landblock.pl" class="btn docs">
+                    <div class="btn-icon">📚</div>
+                    Dokumenty
+                </a>
+            </div>
+            
+            <div class="server-status">
+                <p>IP: <strong>landblock.pl</strong></p>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 LandBlok - Wszelkie prawa zastrzeżone</p>
+            <p>Minecraft jest znakiem towarowym firmy Mojang Studios</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Tworzenie efektu "latających" bloków Minecraft
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const numberOfParticles = 15;
+            
+            for (let i = 0; i < numberOfParticles; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('minecraft-block');
+                
+                // Losowe pozycje i opóźnienia
+                const size = Math.random() * 20 + 10; // 10-30px
+                const left = Math.random() * 100; // 0-100%
+                const delay = Math.random() * 20; // 0-20s
+                const duration = Math.random() * 20 + 20; // 20-40s
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}%`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Animacja przycisków przy załadowaniu strony
+        function animateButtons() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach((btn, index) => {
+                btn.style.opacity = '0';
+                btn.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    btn.style.transition = 'all 0.5s ease';
+                    btn.style.opacity = '1';
+                    btn.style.transform = 'translateY(0)';
+                }, 500 + (index * 200));
+            });
+        }
+        
+        // Inicjalizacja wszystkich funkcji po załadowaniu strony
+        window.addEventListener('load', () => {
+            createParticles();
+            animateButtons();
+            updateServerStatus();
+        });
+    </script>
+</body>
+</html>
